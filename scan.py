@@ -1,8 +1,6 @@
 import datetime
 import time
 
-from binascii import unhexlify
-
 from bluepy.btle import Scanner, DefaultDelegate, BTLEException, Peripheral, UUID
 
 
@@ -15,19 +13,7 @@ class ScanDelegate(DefaultDelegate):
         DefaultDelegate.__init__(self)
 
     def handleDiscovery(self, dev, isNewDev, isNewData):
-        if dev.connectable and dev.addrType == "random":
-            print("We got a live one in here")
-            # for adtype, desc, value in dev.getScanData():
-            #     if adtype == 0x07:
-            #         device = Peripheral(dev.addr, addrType="random")
-            #         service = device.getServiceByUUID(student_number_service)
-            #         chars = device.getCharacteristics(uuid=student_number_characteristic)
-            #         print(service)
-            #         print(chars[0].read())
-        #if isNewDev:
-        #    print("Discovered device", dev.addr)
-        #if isNewData:
-        #    print("Received new data from", dev.addr)
+        print("Discovery: {0}\t{1}".format(dev.addr, dev.addrType))
 
 
 class AttendanceTracker(object):
@@ -38,21 +24,17 @@ class AttendanceTracker(object):
 
     def start_scanning(self, duration):
         students_scanned = 0
-        try:
-            devices = self.scanner.scan(duration)
-            print(len(devices))
-            for dev in devices:
-                for adtype, desc, value in dev.getScanData():
-                    if adtype == 0x07:
-                        if dev.connectable and dev.addrType == "random":
-                            student_number = self.read_student_number(dev.addr)
-                            print("Student Num: {0}".format(student_number))
-                            self.register_student(student_number)
-                            students_scanned += 1
-                        print("Connectable: {0}".format(dev.connectable))
-        except BTLEException as e:
-            print("No devices currently broadcasting")
-            print(e)
+        devices = self.scanner.scan(duration)
+        print("{0} devices".format(len(devices)))
+        for dev in devices:
+            for adtype, desc, value in dev.getScanData():
+                if adtype == 0x07:
+                    if dev.connectable and dev.addrType == "random":
+                        student_number = self.read_student_number(dev.addr)
+                        print("Student Num: {0}".format(student_number))
+                        self.register_student(student_number)
+                        students_scanned += 1
+                    print("Connectable: {0}".format(dev.connectable))
         return students_scanned
 
     def read_student_number(self, mac_address):
@@ -90,4 +72,8 @@ class AttendanceTracker(object):
         self.print_data()
 
 tracker = AttendanceTracker(lecture="Security & Privacy")
+
+start = time.time()
 tracker.record()
+end = time.time()
+print("{0} seconds".format(end - start))
