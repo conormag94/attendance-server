@@ -2,8 +2,6 @@ import datetime
 import threading
 import time
 
-import requests
-
 from scan import AttendanceTracker
 
 
