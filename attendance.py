@@ -16,11 +16,13 @@ def task(lecture):
 
 def start():
     now = datetime.datetime.now()
-    start_time = now + datetime.timedelta(seconds=5)
+    start_time = now + datetime.timedelta(seconds=4)
     delay = (start_time - now).total_seconds()
 
     threading.Timer(delay, task, ["test1"]).start()
-    print("Start: Current thread {0}".format(threading.current_thread()))
+    print("Scheduled lecture, sleeping.... Current thread {0}".format(threading.current_thread()))
+    time.sleep(8)
+    print("WOKE FAM")
 
 
 if __name__ == '__main__':
