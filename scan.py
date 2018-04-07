@@ -59,21 +59,23 @@ class AttendanceTracker(object):
         print("Recording attendance for: {0}".format(self.lecture))
 
         print("Scanning attendance for 1st time...(1/2)")
-        scans = self.start_scanning(duration=15.0)
+        scans = self.start_scanning(duration=10.0)
         print("{0} student numbers scanned during first scan".format(scans))
 
         print("Sleeping")
         time.sleep(3)
 
         print("Scanning attendance for 2nd time...(2/2)")
-        scans = self.start_scanning(duration=15.0)
+        scans = self.start_scanning(duration=10.0)
         print("{0} student numbers scanned during first scan".format(scans))
 
         self.print_data()
 
-tracker = AttendanceTracker(lecture="Security & Privacy")
 
-start = time.time()
-tracker.record()
-end = time.time()
-print("{0} seconds".format(end - start))
+if __name__ == '__main__':
+    tracker = AttendanceTracker(lecture="Security & Privacy")
+
+    start = time.time()
+    tracker.record()
+    end = time.time()
+    print("{0} seconds".format(end - start))
