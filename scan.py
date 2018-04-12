@@ -44,7 +44,7 @@ class AttendanceTracker(object):
         print(service)
 
         student_number = chars[0].read()
-        return student_number
+        return student_number.decode('utf-8')
 
     def register_student(self, student_number):
         if self.data.get(student_number):
@@ -70,6 +70,7 @@ class AttendanceTracker(object):
         print("{0} student numbers scanned during first scan".format(scans))
 
         self.print_data()
+        return self.data
 
 
 if __name__ == '__main__':

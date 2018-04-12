@@ -17,6 +17,12 @@ def get_lectures(room):
     return r["schedule"]
 
 
+def upload_attendance(students, lecture_id):
+    query = '{0}/lectures/{1}'.format(api_url, lecture_id)
+    r = requests.post(query, json={'student_numbers': students}).json()
+    return r
+
+
 if __name__ == '__main__':
     # lectures = get_lectures(this_room)
     lectures = get_test_schedule()

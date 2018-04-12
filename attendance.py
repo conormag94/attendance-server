@@ -13,7 +13,9 @@ scheduled_lectures = dict()
 def start_attendance_tracker(lecture):
     print("Starting lecture {0} on thread {1}".format(lecture['subject'], threading.current_thread()))
     tracker = AttendanceTracker(lecture['subject'])
-    tracker.record()
+
+    student_numbers = tracker.record()
+    api.upload_attendance(student_numbers, lecture['id'])
 
     del scheduled_lectures[lecture['id']]
     print("Finished lecture {0}".format(lecture['subject']))
@@ -21,7 +23,10 @@ def start_attendance_tracker(lecture):
 
 def as_datetime(date_string):
     date_format = '%a, %d %b %Y %H:%M:%S'
-    return datetime.datetime.strptime(date_string, date_format)
+    try:
+        return datetime.datetime.strptime(date_string, date_format)
+    except Exception as e:
+        return datetime.datetime.strptime(date_string, '%a, %d %b %Y %H:%M:%S %Z')
 
 
 def schedule_lecture(lecture_dict):
@@ -35,6 +40,7 @@ def schedule_lecture(lecture_dict):
         lecture_dict['id'], lecture_dict['subject'],
         lecture_dict['room'], lecture_dict['start_time']
     ))
+    print(now)
 
 
 def update_schedule():
