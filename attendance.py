@@ -29,10 +29,12 @@ def as_datetime(date_string):
         return datetime.datetime.strptime(date_string, '%a, %d %b %Y %H:%M:%S %Z')
 
 
-def schedule_lecture(lecture_dict):
-    now = datetime.datetime.now()
+def schedule_lecture(lecture_dict): 
+    now = datetime.datetime.now() + datetime.timedelta(hours=1) #Hardcoding for Daylight savings for the moment
     start_time = as_datetime(lecture_dict['start_time'])
     delay = (start_time - now).total_seconds()
+
+    print("start: {0}, delay: {1}, now: {2}".format(start_time, delay, now))
 
     threading.Timer(delay, start_attendance_tracker, [lecture_dict]).start()
     scheduled_lectures[lecture_dict['id']] = lecture_dict
