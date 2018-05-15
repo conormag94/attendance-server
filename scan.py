@@ -38,12 +38,15 @@ class AttendanceTracker(object):
         return students_scanned
 
     def read_student_number(self, mac_address):
+        start = time.time()
         device = Peripheral(mac_address, addrType="random")
         service = device.getServiceByUUID(student_number_service)
         chars = device.getCharacteristics(uuid=student_number_characteristic)
         print(service)
 
         student_number = chars[0].read()
+        end = time.time()
+        print("{0} seconds".format(end - start))
         return student_number.decode('utf-8')
 
     def register_student(self, student_number):
