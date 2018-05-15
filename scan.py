@@ -13,7 +13,8 @@ class ScanDelegate(DefaultDelegate):
         DefaultDelegate.__init__(self)
 
     def handleDiscovery(self, dev, isNewDev, isNewData):
-        print("Discovery: {0}\t{1}".format(dev.addr, dev.addrType))
+        pass
+        #print("Discovery: {0}\t{1}".format(dev.addr, dev.addrType))
 
 
 class AttendanceTracker(object):
@@ -25,7 +26,7 @@ class AttendanceTracker(object):
     def start_scanning(self, duration):
         students_scanned = 0
         devices = self.scanner.scan(duration)
-        print("{0} devices".format(len(devices)))
+        #print("{0} devices".format(len(devices)))
         for dev in devices:
             for adtype, desc, value in dev.getScanData():
                 if adtype == 0x07:
@@ -34,7 +35,7 @@ class AttendanceTracker(object):
                         print("Student Num: {0}".format(student_number))
                         self.register_student(student_number)
                         students_scanned += 1
-                    print("Connectable: {0}".format(dev.connectable))
+                    #print("Connectable: {0}".format(dev.connectable))
         return students_scanned
 
     def read_student_number(self, mac_address):
@@ -43,8 +44,11 @@ class AttendanceTracker(object):
         service = device.getServiceByUUID(student_number_service)
         chars = device.getCharacteristics(uuid=student_number_characteristic)
         print(service)
+        print(chars)
+        for char in chars:
+            print(char, char.getHandle(), char.propertiesToString(), char.supportsRead())
 
-        student_number = chars[0].read()
+        student_number = chars[-1].read()
         end = time.time()
         print("{0} seconds".format(end - start))
         return student_number.decode('utf-8')
@@ -62,15 +66,15 @@ class AttendanceTracker(object):
         print("Recording attendance for: {0}".format(self.lecture))
 
         print("Scanning attendance for 1st time...(1/2)")
-        scans = self.start_scanning(duration=10.0)
+        scans = self.start_scanning(duration=45.0)
         print("{0} student numbers scanned during first scan".format(scans))
 
         print("Sleeping")
-        time.sleep(3)
+        time.sleep(5)
 
         print("Scanning attendance for 2nd time...(2/2)")
-        scans = self.start_scanning(duration=10.0)
-        print("{0} student numbers scanned during first scan".format(scans))
+        scans = self.start_scanning(duration=45.0)
+        print("{0} student numbers scanned during second scan".format(scans))
 
         self.print_data()
         return self.data
